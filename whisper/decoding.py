@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Sequence, Tuple, Union
+import logging
+import time
 
 import numpy as np
 import torch
@@ -719,6 +721,7 @@ class DecodingTask:
         tokens: Tensor = torch.tensor([self.initial_tokens]).repeat(n_audio, 1)
 
         # detect language if requested, overwriting the language token
+        decoding_start = time.time()  # Start decoding timer after encoding
         languages, language_probs = self._detect_language(audio_features, tokens)
         if self.options.task == "lang_id":
             return [
@@ -771,6 +774,9 @@ class DecodingTask:
         )
         if len(set(map(len, fields))) != 1:
             raise RuntimeError(f"inconsistent result lengths: {list(map(len, fields))}")
+
+        decoding_time = time.time() - decoding_start
+        logging.info(f"Decoding time: {decoding_time:.4f}s")
 
         return [
             DecodingResult(

@@ -1,4 +1,6 @@
 import os
+import time
+import logging
 from functools import lru_cache
 from subprocess import CalledProcessError, run
 from typing import Optional, Union
@@ -8,6 +10,8 @@ import torch
 import torch.nn.functional as F
 
 from .utils import exact_div
+
+logger = logging.getLogger(__name__)
 
 # hard-coded audio hyperparameters
 SAMPLE_RATE = 16000
@@ -135,6 +139,8 @@ def log_mel_spectrogram(
     torch.Tensor, shape = (n_mels, n_frames)
         A Tensor that contains the Mel spectrogram
     """
+    start_time = time.time()
+    
     if not torch.is_tensor(audio):
         if isinstance(audio, str):
             audio = load_audio(audio)
@@ -154,4 +160,8 @@ def log_mel_spectrogram(
     log_spec = torch.clamp(mel_spec, min=1e-10).log10()
     log_spec = torch.maximum(log_spec, log_spec.max() - 8.0)
     log_spec = (log_spec + 4.0) / 4.0
+    
+    preprocessing_time = time.time() - start_time
+    logger.info(f"Preprocessing (mel spectrogram) completed in {preprocessing_time:.4f}s")
+    
     return log_spec

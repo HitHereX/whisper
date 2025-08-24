@@ -1,5 +1,7 @@
 import base64
 import gzip
+import logging
+import time
 from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Dict, Iterable, Optional, Tuple
@@ -190,6 +192,8 @@ class AudioEncoder(nn.Module):
         x : torch.Tensor, shape = (batch_size, n_mels, n_ctx)
             the mel spectrogram of the audio
         """
+        start_time = time.time()
+        
         x = F.gelu(self.conv1(x))
         x = F.gelu(self.conv2(x))
         x = x.permute(0, 2, 1)
@@ -201,6 +205,10 @@ class AudioEncoder(nn.Module):
             x = block(x)
 
         x = self.ln_post(x)
+        
+        encoding_time = time.time() - start_time
+        logging.info(f"Encoding time: {encoding_time:.4f}s")
+        
         return x
 
 
