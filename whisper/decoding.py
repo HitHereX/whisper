@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Sequence, Tuple, Union
-import logging
 import time
 
 import numpy as np
@@ -776,7 +775,7 @@ class DecodingTask:
             raise RuntimeError(f"inconsistent result lengths: {list(map(len, fields))}")
 
         decoding_time = time.time() - decoding_start
-        logging.info(f"Decoding time: {decoding_time:.4f}s")
+        print(f"Decoding time: {decoding_time:.4f}s")
 
         return [
             DecodingResult(

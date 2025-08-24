@@ -1,6 +1,5 @@
 import base64
 import gzip
-import logging
 import time
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -207,7 +206,7 @@ class AudioEncoder(nn.Module):
         x = self.ln_post(x)
         
         encoding_time = time.time() - start_time
-        logging.info(f"Encoding time: {encoding_time:.4f}s")
+        print(f"Encoding time: {encoding_time:.4f}s")
         
         return x
 

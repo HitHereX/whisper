@@ -1,6 +1,5 @@
 import os
 import time
-import logging
 from functools import lru_cache
 from subprocess import CalledProcessError, run
 from typing import Optional, Union
@@ -11,7 +10,6 @@ import torch.nn.functional as F
 
 from .utils import exact_div
 
-logger = logging.getLogger(__name__)
 
 # hard-coded audio hyperparameters
 SAMPLE_RATE = 16000
@@ -162,6 +160,6 @@ def log_mel_spectrogram(
     log_spec = (log_spec + 4.0) / 4.0
     
     preprocessing_time = time.time() - start_time
-    logger.info(f"Preprocessing (mel spectrogram) completed in {preprocessing_time:.4f}s")
+    print(f"Preprocessing (mel spectrogram) completed in {preprocessing_time:.4f}s")
     
     return log_spec
